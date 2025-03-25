@@ -1,0 +1,61 @@
+---
+title: "fert_data_exploration"
+format: html
+editor: visual
+---
+# load packages
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+install.packages("janitor")
+library(janitor) # expedite cleaning and exploring data
+library(scales) # scale functions for visualization
+```
+# fix year column to make it a factor
+```{r}
+# Convert to Date class if it's not already
+Chp1_fert_data$year <- as.Date(Chp1_fert_data$year)
+library(lubridate)
+
+# Extract year using lubridate's year function
+Chp1_fert_data$year <- year(Chp1_fert_data$year)
+Chp1_fert_data$year <- factor(Chp1_fert_data$year)
+
+# View the updated dataset
+head(Chp1_fert_data)
+
+```
+# exploratory plots
+
+```{r}
+#time 0 plots
+Chp1_fert_data %>%
+  filter(year == 2018) %>%
+  ggplot(aes(x = treatment, y = N)) + 
+  geom_boxplot()
+
+```
+```{r}
+# attempting to facet wrap by year for N
+ggplot(Chp1_fert_data,
+       aes(x = treatment, y = N)) + 
+  geom_boxplot() +
+  facet_wrap( ~ year)
+```
+
+
+```{r}
+#reordering x labels and rerunning graph
+
+Chp1_fert_data$treatment <- factor(Chp1_fert_data$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+ggplot(Chp1_fert_data,
+       aes(x = treatment, y = N)) + 
+  geom_boxplot() +
+  facet_wrap( ~ year)
+
+```
+
+
