@@ -62,3 +62,110 @@ ggplot(Chp1_fert_data,
   facet_wrap( ~ year)
 
 ```
+
+# adding cnp ratios
+
+```{r}
+Chp1_fert_data <- Chp1_fert_data %>% 
+  mutate(CN = C / N) %>%
+  mutate(CP = C / p) %>%
+  mutate(NP = N / p) %>%
+  mutate(ligninN = lignin / N)
+```
+
+# exploring normality
+
+```{r}
+# List of response variables
+response_vars<- c("C", "N", "p", "BSI", "lignin", "CN", "CP", "NP", "ligninN")
+
+# Loop through each response variable
+for (response in response_vars) {
+  
+  # Fit a linear model (replace 'predictors' with your actual variable names)
+  model <- lm(as.formula(paste(response, "~ treatment")), data = Chp1_fert_data)
+  
+  # Get the residuals
+  residuals <- model$residuals
+  
+  # 1. Histogram of residuals
+  ggplot(data.frame(residuals), aes(x = residuals)) +
+    geom_histogram(bins = 30, fill = 'lightblue', color = 'black') +
+    labs(title = paste("Histogram of Residuals for", response), x = "Residuals", y = "Frequency") +
+    theme_minimal() 
+  
+  # 2. Q-Q plot for normality
+  qqnorm(residuals)
+  qqline(residuals, col = "red")
+  title(paste("QQ Plot of Residuals for", response))
+  
+  # 3. Shapiro-Wilk test for normality
+  shapiro_test <- shapiro.test(residuals)
+  print(paste("Shapiro-Wilk test for", response, "p-value:", shapiro_test$p.value))
+}
+
+```
+
+# identifying large outliers
+
+```{r}
+
+# Subset the numeric columns
+numeric_data <- Chp1_fert_data[sapply(Chp1_fert_data, is.numeric)]
+
+# Function to identify outliers based on the IQR method
+identify_outliers <- function(x) {
+  Q1 <- quantile(x, 0.25, na.rm = TRUE)
+  Q3 <- quantile(x, 0.75, na.rm = TRUE)
+  IQR_value <- IQR(x, na.rm = TRUE)
+  lower_bound <- Q1 - 1.5 * IQR_value
+  upper_bound <- Q3 + 1.5 * IQR_value
+  
+  # Return a logical vector: TRUE for outliers, FALSE for non-outliers
+  return(x < lower_bound | x > upper_bound)
+}
+
+# Apply the identify_outliers function to each numeric column
+outliers_matrix <- sapply(numeric_data, identify_outliers)
+
+
+```
+
+# exporting data to csv to address outliers
+
+```{r}
+write.csv(Chp1_fert_data, 'Chp1_fert_data_clean.csv')
+ #imported cleaned dataset with NA in cells out of IQR for ligning, silica, and associated ratios. These I believe were lab errors, not actual values
+```
+
+# exploring normality on cleaned dataset
+
+```{r}
+# List of response variables
+response_vars_cleaned<- c("C", "N", "p", "BSI", "lignin", "CN", "CP", "NP", "ligninN")
+
+# Loop through each response variable
+for (response in response_vars_cleaned) {
+  
+  # Fit a linear model (replace 'predictors' with your actual variable names)
+  model2 <- lm(as.formula(paste(response, "~ treatment")), data = Chp1_fert_data_clean)
+  
+  # Get the residuals
+  residuals2 <- model2$residuals
+  
+  # 1. Histogram of residuals
+  ggplot(data.frame(residuals2), aes(x = residuals2)) +
+    geom_histogram(bins = 30, fill = 'lightblue', color = 'black') +
+    labs(title = paste("Histogram of Residuals for", response), x = "Residuals", y = "Frequency") +
+    theme_minimal() 
+  
+  # 2. Q-Q plot for normality
+  qqnorm(residuals2)
+  qqline(residuals2, col = "red")
+  title(paste("QQ Plot of Residuals for", response))
+  
+  # 3. Shapiro-Wilk test for normality
+  shapiro_test <- shapiro.test(residuals2)
+  print(paste("Shapiro-Wilk test for", response, "p-value:", shapiro_test$p.value))
+}
+```
