@@ -3,7 +3,9 @@ title: "fert_data_exploration"
 format: html
 editor: visual
 ---
+
 # load packages
+
 ```{r}
 library(readr)
 library(dplyr)
@@ -13,7 +15,9 @@ install.packages("janitor")
 library(janitor) # expedite cleaning and exploring data
 library(scales) # scale functions for visualization
 ```
+
 # fix year column to make it a factor
+
 ```{r}
 # Convert to Date class if it's not already
 Chp1_fert_data$year <- as.Date(Chp1_fert_data$year)
@@ -27,6 +31,7 @@ Chp1_fert_data$year <- factor(Chp1_fert_data$year)
 head(Chp1_fert_data)
 
 ```
+
 # exploratory plots
 
 ```{r}
@@ -37,6 +42,7 @@ Chp1_fert_data %>%
   geom_boxplot()
 
 ```
+
 ```{r}
 # attempting to facet wrap by year for N
 ggplot(Chp1_fert_data,
@@ -44,7 +50,6 @@ ggplot(Chp1_fert_data,
   geom_boxplot() +
   facet_wrap( ~ year)
 ```
-
 
 ```{r}
 #reordering x labels and rerunning graph
@@ -57,5 +62,3 @@ ggplot(Chp1_fert_data,
   facet_wrap( ~ year)
 
 ```
-
-
