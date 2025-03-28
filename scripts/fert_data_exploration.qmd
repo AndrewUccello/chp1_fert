@@ -169,3 +169,5 @@ for (response in response_vars_cleaned) {
   print(paste("Shapiro-Wilk test for", response, "p-value:", shapiro_test$p.value))
 }
 ```
+
+# Residuals look normal for all variables, except BSI.May Tukey test BSI
