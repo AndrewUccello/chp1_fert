@@ -1,0 +1,112 @@
+---
+title: "fert_data_calcs"
+format: html
+editor: visual
+---
+#Load packages
+
+```{r}
+library(tidyverse)
+```
+# 2018 figures
+```{r}
+#testing loops for making graphs changing the Y axis
+
+yaxis_variables <- colnames(Chp1_fert_data_clean) 
+
+
+for (y_col in yaxis_variables) {
+  # Make sure to only include numeric or relevant columns for y
+  if (is.numeric(Chp1_fert_data_clean[[y_col]])) {
+    # Create the plot with dynamic y aesthetic
+    Chp1_fert_data_clean$treatment <- factor(Chp1_fert_data$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+    init_plot <- Chp1_fert_data_clean %>%
+      filter(year == 2018) %>%
+      ggplot(aes(x = treatment, y = .data[[y_col]])) + 
+      geom_boxplot() 
+    
+    # Print the plot
+    print(init_plot)
+  }
+}
+
+
+
+```
+# testing change over time figures
+```{r}
+#testing loops for making graphs changing the Y axis
+CHP1_toolikFertPlots_changeOverTime$year <- as.numeric(CHP1_toolikFertPlots_changeOverTime$year)
+yaxis_variables_delta <- colnames(CHP1_toolikFertPlots_changeOverTime) 
+
+for (y_col in yaxis_variables_delta) {
+  # Make sure to only include numeric or relevant columns for y
+  if (is.numeric(CHP1_toolikFertPlots_changeOverTime[[y_col]])) {
+    # Create the plot with dynamic y aesthetic
+    CHP1_toolikFertPlots_changeOverTime$treatment <- factor(CHP1_toolikFertPlots_changeOverTime$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+    delta_plot <- CHP1_toolikFertPlots_changeOverTime %>%
+      ggplot(aes(x = year, y = .data[[y_col]])) + 
+      geom_jitter(width = 0.1) +
+      geom_smooth(method = "lm", fullrange = TRUE) +
+      facet_wrap( ~ treatment,
+                  scales = "free_y")
+    
+    # Print the plot
+    print(delta_plot)
+  }
+}
+
+Chp1_fert_data_time <- Chp1_fert_data_time %>% 
+  mutate(delta2021P = p.2021 - p.2018) %>%
+  mutate(delta2021C = C.2021 - C.2018) %>%
+  mutate(delta2021N = N.2021 - N.2018) %>%
+  mutate(delta2021lig = lignin.2021 - lignin.2018) %>%
+  mutate(delta2021CN = CN.2021 - CN.2018) %>%
+  mutate(delta2021CP = CP.2021 - CP.2018) %>%
+  mutate(delta2021NP = NP.2021 - NP.2018) %>%
+  mutate(delta2021ligN = ligninN.2021 - ligninN.2018)
+
+yaxis_variables_time <- c("delta2021P", "delta2021C", "delta2021N", "delta2021lig", "delta2021CN", "delta2021CP", "delta2021NP", "delta2021ligN", "delta2021BSI")
+
+for (y_col in yaxis_variables_time) {
+  # Make sure to only include numeric or relevant columns for y
+  if (is.numeric(Chp1_fert_data_time[[y_col]])) {
+    # Create the plot with dynamic y aesthetic
+    Chp1_fert_data_time$treatment <- factor(Chp1_fert_data_time$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+    delta_plot2 <- Chp1_fert_data_time %>%
+      ggplot(aes(x = treatment, y = .data[[y_col]])) +
+      geom_boxplot()
+    
+    # Print the plot
+    print(delta_plot2)
+  }
+}
+
+  
+`````````
+# playing with some stats
+```{r}
+Chp1_fert_data_time <- Chp1_fert_data_time %>% 
+  mutate(delta2021P = p.2021 - p.2018) %>%
+  mutate(delta2021C = C.2021 - C.2018) %>%
+  mutate(delta2021N = N.2021 - N.2018) %>%
+  mutate(delta2021lig = lignin.2021 - lignin.2018) %>%
+  mutate(delta2021CN = CN.2021 - CN.2018) %>%
+  mutate(delta2021CP = CP.2021 - CP.2018) %>%
+  mutate(delta2021NP = NP.2021 - NP.2018) %>%
+  mutate(delta2021ligN = ligninN.2021 - ligninN.2018)
+  
+anova(lm(Chp1_fert_data_time$delta2021P~Chp1_fert_data_time$treatment))
+anova(lm(Chp1_fert_data_time$delta2021C~Chp1_fert_data_time$treatment))
+anova(lm(Chp1_fert_data_time$delta2021N~Chp1_fert_data_time$treatment))
+anova(lm(Chp1_fert_data_time$delta2021lig~Chp1_fert_data_time$treatment))
+anova(lm(Chp1_fert_data_time$delta2021CN~Chp1_fert_data_time$treatment))
+anova(lm(Chp1_fert_data_time$delta2021CP~Chp1_fert_data_time$treatment))
+anova(lm(Chp1_fert_data_time$delta2021NP~Chp1_fert_data_time$treatment))
+anova(lm(Chp1_fert_data_time$delta2021ligN~Chp1_fert_data_time$treatment))
+```
+
+
