@@ -86,7 +86,7 @@ for (y_col in yaxis_variables_time) {
 }
 
   
-`````````
+```
 # playing with some stats
 ```{r}
 Chp1_fert_data_time <- Chp1_fert_data_time %>% 
@@ -109,4 +109,33 @@ anova(lm(Chp1_fert_data_time$delta2021NP~Chp1_fert_data_time$treatment))
 anova(lm(Chp1_fert_data_time$delta2021ligN~Chp1_fert_data_time$treatment))
 ```
 
+```{r}
+#loops for raw values by year 
+yaxis_rawvalues <- colnames(Chp1_fert_data_clean) 
+
+for (y_col in yaxis_rawvalues) {
+  # Make sure to only include numeric or relevant columns for y
+  if (is.numeric(Chp1_fert_data_clean[[y_col]])) {
+    # Create the plot with dynamic y aesthetic
+    Chp1_fert_data_clean$treatment <- factor(Chp1_fert_data_clean$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+    rawvalues_plot <- Chp1_fert_data_clean %>%
+      ggplot(aes(x = treatment, y = .data[[y_col]])) +
+      geom_boxplot() +
+      facet_wrap( ~ year)
+    
+    # Print the plot
+    print(rawvalues_plot)
+  }
+}
+```
+
+# does 3 years of fert and cutting lead to higher/lower lignin, bsi, or C in any plot
+```{r}
+f10 <- Chp1_fert_data_time %>%
+  filter(treatment == "F10")
+t.test(f10$BSI.2021, f10$BSI.2018, mu=0, alternative = "greater")
+t.test(f10$lignin.2021, f10$lignin.2018, mu=0, alternative = "less")
+  
+```
 
