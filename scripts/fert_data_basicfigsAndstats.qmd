@@ -107,6 +107,9 @@ anova(lm(Chp1_fert_data_time$delta2021CN~Chp1_fert_data_time$treatment))
 anova(lm(Chp1_fert_data_time$delta2021CP~Chp1_fert_data_time$treatment))
 anova(lm(Chp1_fert_data_time$delta2021NP~Chp1_fert_data_time$treatment))
 anova(lm(Chp1_fert_data_time$delta2021ligN~Chp1_fert_data_time$treatment))
+
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaP~CHP1_toolikFertPlots_changeOverTime$treatment))
+
 ```
 
 ```{r}
@@ -136,6 +139,104 @@ f10 <- Chp1_fert_data_time %>%
   filter(treatment == "F10")
 t.test(f10$BSI.2021, f10$BSI.2018, mu=0, alternative = "greater")
 t.test(f10$lignin.2021, f10$lignin.2018, mu=0, alternative = "less")
+t.test(f10$lignin.2019, f10$lignin.2018, mu=0, alternative = "less")
+t.test(f10$CN.2021, f10$CN.2018, mu=0, alternative = "less")
+
+Chp1_fert_data_clean %>%
+      ggplot(aes(x = year, y = BSI)) +
+      geom_point() +
+  geom_smooth(method = lm) +
+  facet_wrap(~treatment)
+
+```
+
+# subsetting data by year for Anovas for the effect size variables
+```{r}
+Change2019<- CHP1_toolikFertPlots_changeOverTime %>%
+  filter(year == "1")
+Change2020 <- CHP1_toolikFertPlots_changeOverTime %>%
+  filter(year == "2")
+Change2021 <- CHP1_toolikFertPlots_changeOverTime %>%
+  filter(year == "3")
+```
+
+
+```{r}
+#2019 anova loop
+variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
+# Loop through each variable in the 'variables_delta_byyear'
+for (var2019 in variables_delta_byyear) {
+  # Run ANOVA with 'treatment' as the factor and the variable as the response
+  formula2019 <- as.formula(paste(var2019, "~ treatment"))
+  anova_result_2019 <- aov(formula2019, data = Change2019)
   
+  # Print the result of the ANOVA for each variable
+  cat("\nANOVA results for", var2019, ":\n")
+  print(summary(anova_result_2019))
+}
+```
+
+
+```{r}
+#2020 anova loop
+variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
+# Loop through each variable in the 'variables_delta_byyear'
+for (var2020 in variables_delta_byyear) {
+  # Run ANOVA with 'treatment' as the factor and the variable as the response
+  formula2020 <- as.formula(paste(var2020, "~ treatment"))
+  anova_result_2020 <- aov(formula2020, data = Change2020)
+  
+  # Print the result of the ANOVA for each variable
+  cat("\nANOVA results for", var2020, ":\n")
+  print(summary(anova_result_2020))
+}
+```
+
+
+```{r}
+#2021 anova loop
+variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
+# Loop through each variable in the 'variables_delta_byyear'
+for (var2021 in variables_delta_byyear) {
+  # Run ANOVA with 'treatment' as the factor and the variable as the response
+  formula2021 <- as.formula(paste(var2021, "~ treatment"))
+  anova_result_2021 <- aov(formula2021, data = Change2021)
+  
+  # Print the result of the ANOVA for each variable
+  cat("\nANOVA results for", var2021, ":\n")
+  print(summary(anova_result_2021))
+}
+```
+```{r}
+variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+
+for (y_col2 in variables_delta_byyear) {
+  {
+    # Create the plot with dynamic y aesthetic
+    CHP1_toolikFertPlots_changeOverTime$treatment <- factor(CHP1_toolikFertPlots_changeOverTime$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+    delta_figures <- ggplot(CHP1_toolikFertPlots_changeOverTime, aes(x = year, y = .data[[y_col2]], fill = treatment)) +
+      geom_jitter(size = 3, width = 0.15, shape = 21) +
+      geom_smooth(aes(color = treatment),method = "lm", se = FALSE) +
+      scale_fill_brewer(palette = "YlGn") +
+      scale_color_brewer(palette = "YlGn")
+      
+    
+    # Print the plot
+    print(delta_figures)
+  }
+  
+}
+  
+
+```
+```{r}
+
 ```
 

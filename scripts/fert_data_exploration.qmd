@@ -46,7 +46,7 @@ Chp1_fert_data %>%
 ```{r}
 # attempting to facet wrap by year for N
 ggplot(Chp1_fert_data,
-       aes(x = treatment, y = N)) + 
+       aes(x = treatment, y = p)) + 
   geom_boxplot() +
   facet_wrap( ~ year)
 ```
@@ -57,7 +57,7 @@ ggplot(Chp1_fert_data,
 Chp1_fert_data$treatment <- factor(Chp1_fert_data$treatment, 
                                     levels = c("CT", "F2", "F5", "F10"))
 ggplot(Chp1_fert_data,
-       aes(x = treatment, y = N)) + 
+       aes(x = treatment, y = p)) + 
   geom_boxplot() +
   facet_wrap( ~ year)
 
