@@ -223,7 +223,8 @@ for (y_col2 in variables_delta_byyear) {
                                     levels = c("CT", "F2", "F5", "F10"))
     delta_figures <- ggplot(CHP1_toolikFertPlots_changeOverTime, aes(x = year, y = .data[[y_col2]], fill = treatment)) +
       geom_jitter(size = 3, width = 0.15, shape = 21) +
-      geom_smooth(aes(color = treatment),method = "lm", se = FALSE) +
+      geom_smooth(aes(color = treatment), se = FALSE) +
+      theme_bw() +
       scale_fill_brewer(palette = "YlGn") +
       scale_color_brewer(palette = "YlGn")
       
