@@ -137,17 +137,27 @@ for (y_col in yaxis_rawvalues) {
 ```{r}
 f10 <- Chp1_fert_data_time %>%
   filter(treatment == "F10")
-t.test(f10$BSI.2021, f10$BSI.2018, mu=0, alternative = "greater")
-t.test(f10$lignin.2021, f10$lignin.2018, mu=0, alternative = "less")
-t.test(f10$lignin.2019, f10$lignin.2018, mu=0, alternative = "less")
-t.test(f10$CN.2021, f10$CN.2018, mu=0, alternative = "less")
+f5 <- Chp1_fert_data_time %>%
+  filter(treatment == "F5")
+f2 <- Chp1_fert_data_time %>%
+  filter(treatment == "F2")
+ct <- Chp1_fert_data_time %>%
+  filter(treatment == "CT")
 
-Chp1_fert_data_clean %>%
-      ggplot(aes(x = year, y = BSI)) +
-      geom_point() +
-  geom_smooth(method = lm) +
-  facet_wrap(~treatment)
 
+t.test(ct$C.2021, ct$C.2018, mu=0,  paired = TRUE)
+t.test(ct$N.2021, ct$N.2018, mu=0,  paired = TRUE)
+t.test(ct$p.2021, ct$p.2018, mu=0,  paired = TRUE)
+t.test(ct$CN.2021, ct$CN.2018, mu=0,  paired = TRUE)
+t.test(ct$CP.2021, ct$CP.2018, mu=0,  paired = TRUE)
+t.test(ct$NP.2021, ct$NP.2018, mu=0,  paired = TRUE)
+t.test(ct$lignin.2021, ct$lignin.2018, mu=0,  paired = TRUE)
+t.test(ct$BSI.2021, ct$BSI.2018, mu=0,  paired = TRUE, alternative = "greater")
+t.test(ct$ligninN.2021, ct$ligninN.2018, mu=0,  paired = TRUE)
+
+
+power.t.test(n = 3, sd=0.025, sig.level=0.05, delta = 0.15) 
+boxplot(ct$BSI.2018, ct$BSI.2021)
 ```
 
 # subsetting data by year for Anovas for the effect size variables
@@ -238,6 +248,7 @@ for (y_col2 in variables_delta_byyear) {
 
 ```
 ```{r}
-
+TukeyHSD(aov(Change2020$deltaCP~Change2020$treatment))
+TukeyHSD(aov(Change2021$deltaP~Change2021$treatment))
 ```
 
