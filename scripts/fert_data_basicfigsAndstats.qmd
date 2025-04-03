@@ -145,7 +145,14 @@ ct <- Chp1_fert_data_time %>%
   filter(treatment == "CT")
 
 
-t.test(ct$C.2021, ct$C.2018, mu=0,  paired = TRUE)
+ct_unclean_bsi <- Chp1_fert_data %>%
+  filter(treatment == "CT") %>%
+  select(year, BSI, block)
+t.test(ct$C.2021, ct$C.2018, mu=0,  paired = TRUE, alternative = "less")
+t.test(f2$C.2021, f2$C.2018, mu=0,  paired = TRUE, alternative = "less")
+t.test(f5$C.2021, f5$C.2018, mu=0,  paired = TRUE, alternative = "less")
+t.test(f10$C.2021, f10$C.2018, mu=0,  paired = TRUE, alternative = "less")
+
 t.test(ct$N.2021, ct$N.2018, mu=0,  paired = TRUE)
 t.test(ct$p.2021, ct$p.2018, mu=0,  paired = TRUE)
 t.test(ct$CN.2021, ct$CN.2018, mu=0,  paired = TRUE)
@@ -155,9 +162,13 @@ t.test(ct$lignin.2021, ct$lignin.2018, mu=0,  paired = TRUE)
 t.test(ct$BSI.2021, ct$BSI.2018, mu=0,  paired = TRUE, alternative = "greater")
 t.test(ct$ligninN.2021, ct$ligninN.2018, mu=0,  paired = TRUE)
 
+anova(lm(Chp1_fert_data_clean$C ~ Chp1_fert_data_clean$year))
+ggplot(ct, aes(x = , y = BSI)) +
+  geom_point() +
+  geom_boxplot(aes(group = year))
 
 power.t.test(n = 3, sd=0.025, sig.level=0.05, delta = 0.15) 
-boxplot(ct$BSI.2018, ct$BSI.2021)
+
 ```
 
 # subsetting data by year for Anovas for the effect size variables
@@ -250,5 +261,16 @@ for (y_col2 in variables_delta_byyear) {
 ```{r}
 TukeyHSD(aov(Change2020$deltaCP~Change2020$treatment))
 TukeyHSD(aov(Change2021$deltaP~Change2021$treatment))
+```
+
+#Coorelations?
+```{r}
+only2018ct <- Chp1_fert_data_clean %>%
+  filter(year == "2018", treatment == "CT")
+only2018 <- Chp1_fert_data_clean %>%
+  filter(year == "2018")
+cor.test(only2018ct$lignin, only2018ct$C)
+cor.test(only2018$lignin, only2018$C)
+#lignin highly coorelated with C
 ```
 

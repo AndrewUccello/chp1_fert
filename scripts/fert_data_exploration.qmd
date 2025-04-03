@@ -57,7 +57,7 @@ ggplot(Chp1_fert_data,
 Chp1_fert_data$treatment <- factor(Chp1_fert_data$treatment, 
                                     levels = c("CT", "F2", "F5", "F10"))
 ggplot(Chp1_fert_data,
-       aes(x = treatment, y = p)) + 
+       aes(x = treatment, y = N)) + 
   geom_boxplot() +
   facet_wrap( ~ year)
 
@@ -170,4 +170,4 @@ for (response in response_vars_cleaned) {
 }
 ```
 
-# Residuals look normal for all variables, except BSI.May Tukey test BSI
+# Residuals look normal for all variables, except BSI.
