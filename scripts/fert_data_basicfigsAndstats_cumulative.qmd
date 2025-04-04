@@ -1,0 +1,92 @@
+---
+title: "fert_data_stasandfigs_cumulative"
+format: html
+editor: visual
+---
+
+```{r}
+Change2019_cumulative<- CHP1_toolikFertPlots_changeOverTime_cumulative %>%
+  filter(year == "2019")
+Change2020_cumulative <- CHP1_toolikFertPlots_changeOverTime_cumulative %>%
+  filter(year == "2020")
+Change2021_cumulative <- CHP1_toolikFertPlots_changeOverTime_cumulative %>%
+  filter(year == "2021")
+```
+
+```{r}
+#2019 anova loop
+variables_delta_byyear_cumulative <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
+# Loop through each variable in the 'variables_delta_byyear'
+for (var2019_cumulative in variables_delta_byyear_cumulative) {
+  # Run ANOVA with 'treatment' as the factor and the variable as the response
+  formula2019_cumulative <- as.formula(paste(var2019_cumulative, "~ treatment"))
+  anova_result_2019_cumulative <- aov(formula2019_cumulative, data = Change2019_cumulative)
+  
+  # Print the result of the ANOVA for each variable
+  cat("\nANOVA results for", var2019_cumulative, ":\n")
+  print(summary(anova_result_2019_cumulative))
+}
+```
+
+
+```{r}
+#2020 anova loop
+variables_delta_byyear_cumulative <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
+# Loop through each variable in the 'variables_delta_byyear'
+for (var2020_cumulative in variables_delta_byyear_cumulative) {
+  # Run ANOVA with 'treatment' as the factor and the variable as the response
+  formula2020_cumulative <- as.formula(paste(var2020_cumulative, "~ treatment"))
+  anova_result_2020_cumulative <- aov(formula2020_cumulative, data = Change2020_cumulative)
+  
+  # Print the result of the ANOVA for each variable
+  cat("\nANOVA results for", var2020_cumulative, ":\n")
+  print(summary(anova_result_2020_cumulative))
+}
+```
+
+
+```{r}
+#2021 anova loop
+variables_delta_byyear_cumulative <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
+# Loop through each variable in the 'variables_delta_byyear'
+for (var2021_cumulative in variables_delta_byyear_cumulative) {
+  # Run ANOVA with 'treatment' as the factor and the variable as the response
+  formula2021_cumulative <- as.formula(paste(var2021_cumulative, "~ treatment"))
+  anova_result_2021_cumulative <- aov(formula2021_cumulative, data = Change2021_cumulative)
+  
+  # Print the result of the ANOVA for each variable
+  cat("\nANOVA results for", var2021_cumulative, ":\n")
+  print(summary(anova_result_2021_cumulative))
+}
+```
+
+```{r}
+variables_delta_byyear_cumulative <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+
+for (y_col2_cumulative in variables_delta_byyear_cumulative) {
+  {
+    # Create the plot with dynamic y aesthetic
+    CHP1_toolikFertPlots_changeOverTime_cumulative$treatment <- factor(CHP1_toolikFertPlots_changeOverTime_cumulative$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+    delta_figures_cumulative <- ggplot(CHP1_toolikFertPlots_changeOverTime_cumulative, aes(x = year, y = .data[[y_col2_cumulative]], fill = treatment)) +
+      geom_jitter(size = 3, width = 0.15, shape = 21) +
+      geom_smooth(aes(color = treatment), se = FALSE) +
+      theme_bw() +
+      scale_fill_brewer(palette = "YlGn") +
+      scale_color_brewer(palette = "YlGn")
+      
+    
+    # Print the plot
+    print(delta_figures_cumulative)
+  }
+  
+}
+  
+```
+

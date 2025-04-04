@@ -273,4 +273,35 @@ cor.test(only2018ct$lignin, only2018ct$C)
 cor.test(only2018$lignin, only2018$C)
 #lignin highly coorelated with C
 ```
+```{r}
+variables_delta_byyear<- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
+
+for (y_col in variables_delta_byyear) {
+  # Make sure to only include numeric or relevant columns for y
+  if (is.numeric(CHP1_toolikFertPlots_changeOverTime[[y_col]])) {
+    # Create the plot with dynamic y aesthetic
+    CHP1_toolikFertPlots_changeOverTime$treatment <- factor(CHP1_toolikFertPlots_changeOverTime$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
+    deltavalues_plot <- CHP1_toolikFertPlots_changeOverTime %>%
+      ggplot(aes(x = treatment, y = .data[[y_col]])) +
+      geom_boxplot() +
+      facet_wrap( ~ year)
+    
+    # Print the plot
+    print(deltavalues_plot)
+  }
+}
+```
+
+```{r}
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaC~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaN~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaP~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaCN~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaCP~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaNP~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltalignin~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaligninN~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaBSI~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+```
 
