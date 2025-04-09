@@ -31,8 +31,20 @@ for (y_col in yaxis_variables) {
   }
 }
 
+InitAnova_dataset<- Chp1_fert_data_clean %>%
+      filter(year == 2018)
+FinalAnova_dataset <- Chp1_fert_data_clean %>%
+      filter(year == 2021)
 
-
+anova(lm(InitAnova_dataset$C~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$N~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$p~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$CN~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$CP~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$NP~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$BSI~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$lignin~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$ligninN~InitAnova_dataset$treatment))
 ```
 # testing change over time figures
 ```{r}
@@ -283,8 +295,10 @@ for (y_col in variables_delta_byyear) {
     CHP1_toolikFertPlots_changeOverTime$treatment <- factor(CHP1_toolikFertPlots_changeOverTime$treatment, 
                                     levels = c("CT", "F2", "F5", "F10"))
     deltavalues_plot <- CHP1_toolikFertPlots_changeOverTime %>%
-      ggplot(aes(x = treatment, y = .data[[y_col]])) +
+      ggplot(aes(x = treatment, y = .data[[y_col]], fill = treatment)) +
       geom_boxplot() +
+      scale_fill_brewer(palette = "YlGn") +
+      scale_color_brewer(palette = "YlGn") +
       facet_wrap( ~ year)
     
     # Print the plot
@@ -303,5 +317,10 @@ anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaNP~CHP1_toolikFertPlots_change
 anova(lm(CHP1_toolikFertPlots_changeOverTime$deltalignin~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
 anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaligninN~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
 anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaBSI~CHP1_toolikFertPlots_changeOverTime$year*CHP1_toolikFertPlots_changeOverTime$treatment))
+```
+
+```{r}
+ggplot(InitAnova_dataset, aes(x = C, y = lignin)) +
+  geom_point(aes(color = treatment))
 ```
 

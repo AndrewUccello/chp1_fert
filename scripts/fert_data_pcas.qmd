@@ -1,0 +1,43 @@
+---
+title: "fert_data_pca"
+format: html
+editor: visual
+---
+
+```{r}
+install.packages("factoextra")
+library(factoextra)
+```
+
+```{r}
+scaled_data_2018 <- scale(InitAnova_dataset[, 5:13])
+clean_data_2018 <- na.omit(scaled_data_2018)
+
+# Match the treatment values for rows that were not omitted
+treatment_clean_2018 <- InitAnova_dataset$treatment[complete.cases(scaled_data_2018)]
+
+pca2018 <- princomp(clean_data_2018, cor = TRUE)
+
+PCAPlot_2018 <- fviz_pca_biplot(pca2018,
+                        addEllipses = FALSE,
+                        col.ind = treatment_clean_2018,
+                        mean.point = FALSE,
+                        repel = TRUE)
+PCAPlot_2018
+
+scaled_data_2021 <- scale(FinalAnova_dataset[, 5:13])
+clean_data_2021 <- na.omit(scaled_data_2021)
+
+# Match the treatment values for rows that were not omitted
+treatment_clean_2021 <- FinalAnova_dataset$treatment[complete.cases(scaled_data_2021)]
+
+pca2021 <- princomp(clean_data_2021, cor = TRUE)
+
+PCAPlot_2021 <- fviz_pca_biplot(pca2021,
+                        addEllipses = TRUE,
+                        col.ind = treatment_clean_2021,
+                        mean.point = FALSE,
+                        repel = TRUE)
+PCAPlot_2021
+?scale
+```

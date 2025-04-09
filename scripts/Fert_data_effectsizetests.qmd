@@ -1,0 +1,153 @@
+---
+title: "fert_data_smallNtests"
+format: html
+editor: visual
+---
+
+```{r}
+kruskal.test(InitAnova_dataset$C~InitAnova_dataset$block)
+kruskal.test(InitAnova_dataset$N~InitAnova_dataset$block)
+kruskal.test(InitAnova_dataset$p~InitAnova_dataset$block)
+kruskal.test(InitAnova_dataset$CN~InitAnova_dataset$block)
+kruskal.test(InitAnova_dataset$CP~InitAnova_dataset$block)
+kruskal.test(InitAnova_dataset$NP~InitAnova_dataset$block)
+kruskal.test(InitAnova_dataset$BSI~InitAnova_dataset$block)
+kruskal.test(InitAnova_dataset$lignin~InitAnova_dataset$block)
+
+## signinifcant difference in lignin by block- suggests highly variable based on environmental heterogeneity
+kruskal.test(InitAnova_dataset$ligninN~InitAnova_dataset$block)
+
+kruskal.test(InitAnova_dataset$C~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$N~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$p~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$CN~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$CP~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$NP~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$BSI~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$lignin~InitAnova_dataset$treatment)
+kruskal.test(InitAnova_dataset$ligninN~InitAnova_dataset$treatment)
+```
+```{r}
+#effect sizes
+library(rstatix)
+
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$C~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$N~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$p~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$CN~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$CP~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$NP~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$BSI~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$lignin~InitAnova_dataset$treatment)
+InitAnova_dataset %>% kruskal_effsize(InitAnova_dataset$ligninN~InitAnova_dataset$treatment)
+
+
+```
+```{r}
+
+##This whole block doesnt really tell us anything becuase we have no control for 2021#
+kruskal.test(FinalAnova_dataset$C~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$N~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$p~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$CN~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$CP~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$NP~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$BSI~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$lignin~FinalAnova_dataset$treatment)
+kruskal.test(FinalAnova_dataset$ligninN~FinalAnova_dataset$treatment)
+
+anova(lm(FinalAnova_dataset$N~FinalAnova_dataset$treatment))
+
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$C~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$N~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$p~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$CN~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$CP~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$NP~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$BSI~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$lignin~FinalAnova_dataset$treatment)
+FinalAnova_dataset %>% kruskal_effsize(FinalAnova_dataset$ligninN~FinalAnova_dataset$treatment)
+
+```
+```{r}
+#2019
+
+kruskal.test(Change2019$deltaC~Change2019$treatment)
+kruskal.test(Change2019$deltaN~Change2019$treatment)
+kruskal.test(Change2019$deltaP~Change2019$treatment)
+kruskal.test(Change2019$deltaCN~Change2019$treatment)
+kruskal.test(Change2019$deltaCP~Change2019$treatment)
+kruskal.test(Change2019$deltaNP~Change2019$treatment)
+kruskal.test(Change2019$deltaBSI~Change2019$treatment)
+kruskal.test(Change2019$deltalignin~Change2019$treatment)
+kruskal.test(Change2019$deltaligninN~Change2019$treatment)
+
+Change2019 %>% kruskal_effsize(Change2019$deltaC~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltaN~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltaP~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltaCN~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltaCP~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltaNP~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltaBSI~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltalignin~Change2019$treatment)
+Change2019 %>% kruskal_effsize(Change2019$deltaligninN~Change2019$treatment)
+```
+```{r}
+#2020
+kruskal.test(Change2020$deltaC~Change2020$treatment)
+kruskal.test(Change2020$deltaN~Change2020$treatment)
+kruskal.test(Change2020$deltaP~Change2020$treatment)
+kruskal.test(Change2020$deltaCN~Change2020$treatment)
+kruskal.test(Change2020$deltaCP~Change2020$treatment)
+kruskal.test(Change2020$deltaNP~Change2020$treatment)
+kruskal.test(Change2020$deltaBSI~Change2020$treatment)
+kruskal.test(Change2020$deltalignin~Change2020$treatment)
+kruskal.test(Change2020$deltaligninN~Change2020$treatment)
+
+Change2020 %>% kruskal_effsize(Change2020$deltaC~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltaN~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltaP~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltaCN~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltaCP~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltaNP~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltaBSI~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltalignin~Change2020$treatment)
+Change2020 %>% kruskal_effsize(Change2020$deltaligninN~Change2020$treatment)
+```
+
+```{r}
+#2021
+kruskal.test(Change2021$deltaC~Change2021$treatment)
+kruskal.test(Change2021$deltaN~Change2021$treatment)
+kruskal.test(Change2021$deltaP~Change2021$treatment)
+kruskal.test(Change2021$deltaCN~Change2021$treatment)
+kruskal.test(Change2021$deltaCP~Change2021$treatment)
+kruskal.test(Change2021$deltaNP~Change2021$treatment)
+kruskal.test(Change2021$deltaBSI~Change2021$treatment)
+kruskal.test(Change2021$deltalignin~Change2021$treatment)
+kruskal.test(Change2021$deltaligninN~Change2021$treatment)
+
+Change2021 %>% kruskal_effsize(Change2021$deltaC~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltaN~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltaP~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltaCN~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltaCP~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltaNP~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltaBSI~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltalignin~Change2021$treatment)
+Change2021 %>% kruskal_effsize(Change2021$deltaligninN~Change2021$treatment)
+```
+
+```{r}
+install.packages("mosaic")
+library(tidyverse)
+library(mosaic)
+```
+```{r}
+p2021_ct_boot <- do(1000)*mean(~delta2021P, data = mosaic::resample(ct))
+mean(ct$delta2021P)
+hist(ct$delta2021P)
+hist(p2021_ct_boot$mean)
+mean(p2021_ct_boot$mean)
+```
+
