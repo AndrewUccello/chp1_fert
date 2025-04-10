@@ -3,12 +3,15 @@ title: "fert_data_calcs"
 format: html
 editor: visual
 ---
+
 #Load packages
 
 ```{r}
 library(tidyverse)
 ```
+
 # 2018 figures
+
 ```{r}
 #testing loops for making graphs changing the Y axis
 
@@ -46,7 +49,9 @@ anova(lm(InitAnova_dataset$BSI~InitAnova_dataset$treatment))
 anova(lm(InitAnova_dataset$lignin~InitAnova_dataset$treatment))
 anova(lm(InitAnova_dataset$ligninN~InitAnova_dataset$treatment))
 ```
+
 # testing change over time figures
+
 ```{r}
 #testing loops for making graphs changing the Y axis
 CHP1_toolikFertPlots_changeOverTime$year <- as.numeric(CHP1_toolikFertPlots_changeOverTime$year)
@@ -99,7 +104,9 @@ for (y_col in yaxis_variables_time) {
 
   
 ```
+
 # playing with some stats
+
 ```{r}
 Chp1_fert_data_time <- Chp1_fert_data_time %>% 
   mutate(delta2021P = p.2021 - p.2018) %>%
@@ -146,6 +153,7 @@ for (y_col in yaxis_rawvalues) {
 ```
 
 # does 3 years of fert and cutting lead to higher/lower lignin, bsi, or C in any plot
+
 ```{r}
 f10 <- Chp1_fert_data_time %>%
   filter(treatment == "F10")
@@ -184,6 +192,7 @@ power.t.test(n = 3, sd=0.025, sig.level=0.05, delta = 0.15)
 ```
 
 # subsetting data by year for Anovas for the effect size variables
+
 ```{r}
 Change2019<- CHP1_toolikFertPlots_changeOverTime %>%
   filter(year == "1")
@@ -193,11 +202,10 @@ Change2021 <- CHP1_toolikFertPlots_changeOverTime %>%
   filter(year == "3")
 ```
 
-
 ```{r}
 #2019 anova loop
 variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
-# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
 
 # Loop through each variable in the 'variables_delta_byyear'
 for (var2019 in variables_delta_byyear) {
@@ -211,11 +219,9 @@ for (var2019 in variables_delta_byyear) {
 }
 ```
 
-
 ```{r}
 #2020 anova loop
-variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
-# Assuming you have a dataset named df, and the variable "treatment" is the factor
+variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", 
 
 # Loop through each variable in the 'variables_delta_byyear'
 for (var2020 in variables_delta_byyear) {
@@ -229,11 +235,10 @@ for (var2020 in variables_delta_byyear) {
 }
 ```
 
-
 ```{r}
 #2021 anova loop
 variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
-# Assuming you have a dataset named df, and the variable "treatment" is the factor
+
 
 # Loop through each variable in the 'variables_delta_byyear'
 for (var2021 in variables_delta_byyear) {
@@ -246,6 +251,7 @@ for (var2021 in variables_delta_byyear) {
   print(summary(anova_result_2021))
 }
 ```
+
 ```{r}
 variables_delta_byyear <- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
 
@@ -270,12 +276,14 @@ for (y_col2 in variables_delta_byyear) {
   
 
 ```
+
 ```{r}
 TukeyHSD(aov(Change2020$deltaCP~Change2020$treatment))
 TukeyHSD(aov(Change2021$deltaP~Change2021$treatment))
 ```
 
 #Coorelations?
+
 ```{r}
 only2018ct <- Chp1_fert_data_clean %>%
   filter(year == "2018", treatment == "CT")
@@ -285,6 +293,7 @@ cor.test(only2018ct$lignin, only2018ct$C)
 cor.test(only2018$lignin, only2018$C)
 #lignin highly coorelated with C
 ```
+
 ```{r}
 variables_delta_byyear<- c("deltaP", "deltaC", "deltaN", "deltaCN", "deltaCP", "deltaNP", "deltaligninN", "deltaBSI", "deltalignin")
 
@@ -323,4 +332,3 @@ anova(lm(CHP1_toolikFertPlots_changeOverTime$deltaBSI~CHP1_toolikFertPlots_chang
 ggplot(InitAnova_dataset, aes(x = C, y = lignin)) +
   geom_point(aes(color = treatment))
 ```
-

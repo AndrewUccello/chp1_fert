@@ -3,7 +3,9 @@ title: "FertData_lmms"
 format: html
 editor: visual
 ---
+
 ## initial plots
+
 ```{r}
 #pivoting my data to long format
 
@@ -62,17 +64,18 @@ names(results) <- traits
 
 results[["NP"]]$model_summary
 results[["NP"]]$emmeans
-?isSingular
+
 ```
 
-
 ## 2019-2021 change stuff
+
 # all data has been scaled
+
 ```{r}
 traits_change <- unique(changeLong_scaled$trait)
 
 results_change <- lapply(traits_change, function(tr_change) {
-  df_trait_change <- filter(changeLong_scaled, trait == tr_change, year == "3")
+  df_trait_change <- filter(changeLong_scaled, trait == tr_change, year == "2")
   model_change <- lmer(value ~ treatment + (1 | block), data = df_trait_change)
   emm_change <- emmeans(model_change, pairwise ~ treatment, adjust = "tukey")
   
@@ -85,9 +88,10 @@ results_change <- lapply(traits_change, function(tr_change) {
 
 names(results_change) <- traits_change
 
-results_change[["deltaP"]]$model_summary_change
-results_change[["deltaP"]]$emmeans_change
+results_change[["deltaNP"]]$model_summary_change
+results_change[["deltaNP"]]$emmeans_change
 ```
+
 ```{r}
 
 changeLong_scaled %>%
@@ -98,12 +102,13 @@ ggplot(aes(x = year, y = value, color = treatment)) +
   theme_minimal()
 
 changeLong_scaled %>%
-  filter(trait == "deltalignin") %>%
+  filter(trait == "deltaNP") %>%
 ggplot(aes(x = year, y = value, color = treatment)) +
   geom_boxplot() +
-  labs(title = "Interaction Plot: Treatment vs Year", x = "Year", y = "deltalignin") +
+  labs(title = "Interaction Plot: Treatment vs Year", x = "Year", y = "deltaNP") +
   theme_minimal()
 ```
+
 ```{r}
 library(lmerTest)
 lmeranovatest<- changeLong_scaled %>%
@@ -111,6 +116,3 @@ lmeranovatest<- changeLong_scaled %>%
   anova(lmer(value ~ treatment + (1 | block), data = lmeranovatest), type = 2)
   
 ```
-
-
-
