@@ -62,7 +62,7 @@ names(results) <- traits
 
 results[["NP"]]$model_summary
 results[["NP"]]$emmeans
-
+?isSingular
 ```
 
 
@@ -89,6 +89,7 @@ results_change[["deltaP"]]$model_summary_change
 results_change[["deltaP"]]$emmeans_change
 ```
 ```{r}
+
 changeLong_scaled %>%
   filter(trait == "deltaP") %>%
 ggplot(aes(x = year, y = value, color = treatment)) +
@@ -102,6 +103,13 @@ ggplot(aes(x = year, y = value, color = treatment)) +
   geom_boxplot() +
   labs(title = "Interaction Plot: Treatment vs Year", x = "Year", y = "deltalignin") +
   theme_minimal()
+```
+```{r}
+library(lmerTest)
+lmeranovatest<- changeLong_scaled %>%
+  filter(trait == "deltaP", year == "3") 
+  anova(lmer(value ~ treatment + (1 | block), data = lmeranovatest), type = 2)
+  
 ```
 
 
