@@ -75,7 +75,7 @@ results[["NP"]]$emmeans
 traits_change <- unique(changeLong_scaled$trait)
 
 results_change <- lapply(traits_change, function(tr_change) {
-  df_trait_change <- filter(changeLong_scaled, trait == tr_change, year == "2")
+  df_trait_change <- filter(changeLong_scaled, trait == tr_change, year == "3")
   model_change <- lmer(value ~ treatment + (1 | block), data = df_trait_change)
   emm_change <- emmeans(model_change, pairwise ~ treatment, adjust = "tukey")
   
@@ -88,8 +88,9 @@ results_change <- lapply(traits_change, function(tr_change) {
 
 names(results_change) <- traits_change
 
-results_change[["deltaNP"]]$model_summary_change
-results_change[["deltaNP"]]$emmeans_change
+results_change[["deltaC"]]$model_summary_change
+results_change[["deltaC"]]$emmeans_change
+plot(model_change)
 ```
 
 ```{r}
@@ -115,4 +116,8 @@ lmeranovatest<- changeLong_scaled %>%
   filter(trait == "deltaP", year == "3") 
   anova(lmer(value ~ treatment + (1 | block), data = lmeranovatest), type = 2)
   
+  lmeranovatest_model <- lmer(value ~ treatment + (1 | block), data = lmeranovatest)
+ 
+simulationOutput <- simulateResiduals(fittedModel = lmeranovatest_model)
+plot(simulationOutput)
 ```

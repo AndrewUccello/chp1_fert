@@ -27,12 +27,15 @@ for (y_col in yaxis_variables) {
     init_plot <- Chp1_fert_data_clean %>%
       filter(year == 2018) %>%
       ggplot(aes(x = treatment, y = .data[[y_col]])) + 
-      geom_boxplot() 
+      geom_boxplot(aes(fill = treatment)) +
+      scale_fill_brewer(palette = "YlGn") +
+      scale_color_brewer(palette = "YlGn") 
     
     # Print the plot
     print(init_plot)
   }
 }
+
 
 InitAnova_dataset<- Chp1_fert_data_clean %>%
       filter(year == 2018)
