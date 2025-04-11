@@ -32,11 +32,17 @@ changeLong_scaled <- pivot_longer(
   values_to = "value"
   )
 # Convert the 'year' column into an ordered factor
-changeLong_scaled$year <- factor(changeLong_scaled$year, levels = c("1", "2", "3"))
+changeLong$year <- factor(changeLong_scaled$year)
 
 # Check the structure
 str(changeLong_scaled)
 
+allData_nodelta_long <- pivot_longer(Chp1_fert_data_clean,
+                                     cols =c(BSI, lignin, ligninN, C, N, p, CN, CP, NP),
+                                     names_to = "trait",
+                                     values_to = "value"
+                                     ) 
+allData_nodelta_long$year <- factor(allData_nodelta_long$year)
 ```
 
 ```{r}
@@ -46,10 +52,10 @@ library(lmerTest)
 library(emmeans)
 library(dplyr)
 
-traits <- unique(InitAnova_dataset_long_scaled$trait)
+traits <- unique(InitialPlots_long$trait)
 
 results <- lapply(traits, function(tr) {
-  df_trait <- filter(InitAnova_dataset_long_scaled, trait == tr)
+  df_trait <- filter(InitialPlots_long, trait == tr)
   model <- lmer(value ~ treatment + (1 | block), data = df_trait)
   emm <- emmeans(model, pairwise ~ treatment, adjust = "tukey")
   
@@ -72,11 +78,13 @@ results[["NP"]]$emmeans
 # all data has been scaled
 
 ```{r}
-traits_change <- unique(changeLong_scaled$trait)
+
+##NOTE<<<---- change long might still be scaled, need to figure out before continuing 4/11
+traits_change <- unique(changeLong$trait)
 
 results_change <- lapply(traits_change, function(tr_change) {
-  df_trait_change <- filter(changeLong_scaled, trait == tr_change, year == "3")
-  model_change <- lmer(value ~ treatment + (1 | block), data = df_trait_change)
+  df_trait_change <- filter(changeLong, trait == tr_change)
+  model_change <- lmer(value ~ treatment * year + (1 | block) + (1 | block:year), data = df_trait_change)
   emm_change <- emmeans(model_change, pairwise ~ treatment, adjust = "tukey")
   
   list(
@@ -88,9 +96,9 @@ results_change <- lapply(traits_change, function(tr_change) {
 
 names(results_change) <- traits_change
 
-results_change[["deltaC"]]$model_summary_change
-results_change[["deltaC"]]$emmeans_change
-plot(model_change)
+results_change[["deltalignin"]]$model_summary_change
+results_change[["deltalignin"]]$emmeans_change
+
 ```
 
 ```{r}
@@ -121,3 +129,28 @@ lmeranovatest<- changeLong_scaled %>%
 simulationOutput <- simulateResiduals(fittedModel = lmeranovatest_model)
 plot(simulationOutput)
 ```
+
+```{r}
+##I think this is basically doing what my delta variable does? but is it calculating change?
+
+
+traits_change_new <- unique(allData_nodelta_long$trait)
+
+results_change_new <- lapply(traits_change_new, function(tr_change_new) {
+  df_trait_change_new <- filter(allData_nodelta_long, trait == tr_change_new)
+  model_change_new <- lmer(value ~ treatment * year + (1 | block) + (1 | block:year), data = df_trait_change_new)
+  emm_change_new <- emmeans(model_change_new, pairwise ~ treatment, adjust = "tukey")
+  
+  list(
+    trait = tr_change_new,
+    model_summary_change_new = summary(model_change_new),
+    emmeans_change_new = emm_change_new
+  )
+})
+
+names(results_change_new) <- traits_change_new
+
+results_change_new[["p"]]$model_summary_change_new
+results_change_new[["p"]]$emmeans_change_new
+```
+
