@@ -1,0 +1,229 @@
+---
+title: "fert_repAnovas"
+format: html
+editor: visual
+---
+
+```{r}
+install.packages("ez")
+library(ez)
+install.packages("nlme")
+library(nlme)
+```
+```{r}
+RMAnova_C_df <- changeLong %>%
+  filter(trait == "deltaC")
+RMAnova_N_df <- changeLong %>%
+  filter(trait == "deltaN")
+RMAnova_P_df <- changeLong %>%
+  filter(trait == "deltaP")
+RMAnova_CN_df <- changeLong %>%
+  filter(trait == "deltaCN")
+RMAnova_CP_df <- changeLong %>%
+  filter(trait == "deltaCP")
+RMAnova_NP_df <- changeLong %>%
+  filter(trait == "deltaNP")
+RMAnova_lignin_df <- changeLong %>%
+  filter(trait == "deltalignin")
+RMAnova_ligninN_df <- changeLong %>%
+  filter(trait == "deltaligninN")
+RMAnova_BSI_df <- changeLong %>%
+  filter(trait == "deltaBSI")
+
+
+```
+
+```{r}
+lme_model_C <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_C_df,
+  na.action = na.exclude
+)
+
+lme_model_N <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_N_df,
+  na.action = na.exclude
+)
+
+lme_model_P <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_P_df,
+  na.action = na.exclude
+)
+
+lme_model_CN <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_CN_df,
+  na.action = na.exclude
+)
+
+lme_model_CP <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_CP_df,
+  na.action = na.exclude
+)
+
+lme_model_NP <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_NP_df,
+  na.action = na.exclude
+)
+
+lme_model_lignin <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_lignin_df,
+  na.action = na.exclude
+)
+
+lme_model_ligninN <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_ligninN_df,
+  na.action = na.exclude
+)
+
+lme_model_BSI <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_BSI_df,
+  na.action = na.exclude
+)
+
+anova(lme_model_C)
+anova(lme_model_N)
+anova(lme_model_P)
+anova(lme_model_CN)
+anova(lme_model_CP)
+anova(lme_model_NP)
+anova(lme_model_lignin)
+anova(lme_model_ligninN)
+anova(lme_model_BSI)
+
+```
+```{r}
+plot_emmeans_by_year <- function(model, model_label = "Model") {
+  library(emmeans)
+  library(ggplot2)
+  
+  # Get estimated marginal means for treatment within each year
+  emm <- emmeans(model, ~ treatment | year)
+  emm_df <- as.data.frame(emm)
+  
+  # Plot the means with error bars
+  ggplot(emm_df, aes(x = treatment, y = emmean, fill = treatment)) +
+    geom_col(position = position_dodge(0.9), color = "black") +
+    geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE),
+                  width = 0.2, position = position_dodge(0.9)) +
+      scale_fill_brewer(palette = "YlGn") +
+      scale_color_brewer(palette = "YlGn") +
+    facet_wrap(~ year) +
+    labs(
+      title = paste("Estimated Marginal Means:", model_label),
+      y = "Estimated change",
+      x = "Treatment"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "none")
+}
+
+
+```
+
+```{r}
+arrangeC <- plot_emmeans_by_year(lme_model_C, "% Carbon")
+arrangeN <- plot_emmeans_by_year(lme_model_N, "% Nitrogen")
+arrangeP <- plot_emmeans_by_year(lme_model_P, "% Phosphorous")
+arrangeCN <- plot_emmeans_by_year(lme_model_CN, "C:N")
+arrangeCP <- plot_emmeans_by_year(lme_model_CP, "C:P")
+arrangeNP <- plot_emmeans_by_year(lme_model_NP, "N:P")
+arrangelignin <- plot_emmeans_by_year(lme_model_lignin, "% Lignin")
+arrangeligninN <- plot_emmeans_by_year(lme_model_ligninN, "Lignin:N")
+arrangeBSI <- plot_emmeans_by_year(lme_model_BSI, "% Silica")
+
+arrangeN
+
+cnpFigures <- ggarrange(arrangeC, arrangeN, arrangeP, arrangeCN, arrangeCP, arrangeNP)
+ligBSIFigures <- ggarrange(arrangelignin, arrangeligninN, arrangeBSI)
+
+ggsave("cnpFigures.pdf", cnpFigures, height = 8, width = 16)
+ggsave("ligBSIFigures.pdf", ligBSIFigures, width = 16, height = 8)
+
+```
+```{r}
+##Funciton for getting means and pairwise comparisons
+get_emm_and_contrasts <- function(model, formula = ~ treatment | year, adjust = "tukey") {
+  library(emmeans)
+  
+  # Get estimated marginal means
+  emm <- emmeans(model, formula)
+  
+  # Get pairwise contrasts
+  comparisons <- pairs(emm, adjust = adjust)
+  
+  # Print both
+  print("Estimated Marginal Means:")
+  print(emm)
+  
+  print(paste("Pairwise comparisons (", adjust, "-adjusted):", sep = ""))
+  print(comparisons)
+  
+  # Return both invisibly so user can assign if needed
+  invisible(list(
+    emmeans = emm,
+    comparisons = comparisons
+  ))
+}
+
+```
+
+```{r}
+##Saving all model outputs
+
+models <- list(
+  Carbon = lme_model_C,
+  Nitrogen = lme_model_N,
+  Phosphorous = lme_model_P,
+  CN = lme_model_CN,
+  CP = lme_model_CP,
+  NP = lme_model_NP,
+  lignin = lme_model_lignin,
+  ligninN = lme_model_ligninN,
+  BSI = lme_model_BSI
+)
+
+library(emmeans)
+library(readr)  
+
+save_emm_results <- function(model_list, output_dir = "emm_results") {
+  dir.create(output_dir, showWarnings = FALSE)
+  
+  for (name in names(model_list)) {
+    model <- model_list[[name]]
+    
+    # Get EMMs and comparisons
+    emm <- emmeans(model, ~ treatment | year)
+    comp <- pairs(emm, adjust = "tukey")
+    
+    # Save EMMs
+    emm_df <- as.data.frame(emm)
+    write_csv(emm_df, file.path(output_dir, paste0(name, "_EMMeans.csv")))
+    
+    # Save pairwise comparisons
+    comp_df <- as.data.frame(summary(comp))
+    write_csv(comp_df, file.path(output_dir, paste0(name, "_Comparisons.csv")))
+    
+    message(paste("Saved:", name))
+  }
+}
+
+save_emm_results(models)
+```
+

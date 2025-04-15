@@ -79,12 +79,12 @@ results[["NP"]]$emmeans
 
 ```{r}
 
-##NOTE<<<---- change long might still be scaled, need to figure out before continuing 4/11
+
 traits_change <- unique(changeLong$trait)
 
 results_change <- lapply(traits_change, function(tr_change) {
-  df_trait_change <- filter(changeLong, trait == tr_change)
-  model_change <- lmer(value ~ treatment * year + (1 | block) + (1 | block:year), data = df_trait_change)
+  df_trait_change <- filter(changeLong, trait == tr_change, year == "1")
+  model_change <- lmer(value ~ treatment+ (1 | block) , data = df_trait_change)
   emm_change <- emmeans(model_change, pairwise ~ treatment, adjust = "tukey")
   
   list(
@@ -96,8 +96,8 @@ results_change <- lapply(traits_change, function(tr_change) {
 
 names(results_change) <- traits_change
 
-results_change[["deltalignin"]]$model_summary_change
-results_change[["deltalignin"]]$emmeans_change
+results_change[["deltaN"]]$model_summary_change
+results_change[["deltaN"]]$emmeans_change
 
 ```
 
@@ -138,7 +138,7 @@ traits_change_new <- unique(allData_nodelta_long$trait)
 
 results_change_new <- lapply(traits_change_new, function(tr_change_new) {
   df_trait_change_new <- filter(allData_nodelta_long, trait == tr_change_new)
-  model_change_new <- lmer(value ~ treatment * year + (1 | block) + (1 | block:year), data = df_trait_change_new)
+  model_change_new <- lmer(value ~ treatment * year + (1 | block:year), data = df_trait_change_new)
   emm_change_new <- emmeans(model_change_new, pairwise ~ treatment, adjust = "tukey")
   
   list(
