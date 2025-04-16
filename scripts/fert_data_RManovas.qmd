@@ -9,6 +9,19 @@ install.packages("ez")
 library(ez)
 install.packages("nlme")
 library(nlme)
+library(dplyr)
+
+CHP1_toolikFertPlots_changeOverTime <- CHP1_toolikFertPlots_changeOverTime %>% mutate_at(c('deltaBSI', 'deltahemicell'), as.numeric)
+changeLong$year <- factor(changeLong_scaled$year)
+changeLong <- pivot_longer(
+  CHP1_toolikFertPlots_changeOverTime,
+  cols = c(deltaBSI, deltaN, deltaC, deltalignin, deltanpe, deltahemicell, deltacell, deltaP, deltaCN, deltaCP, deltaNP, deltaligninN),
+  names_to = "trait",
+  values_to = "value"
+  )
+changeLong$year <- factor(changeLong$year)
+changeLong$treatment <- factor(changeLong$treatment, 
+                                    levels = c("CT", "F2", "F5", "F10"))
 ```
 ```{r}
 RMAnova_C_df <- changeLong %>%
@@ -25,6 +38,12 @@ RMAnova_NP_df <- changeLong %>%
   filter(trait == "deltaNP")
 RMAnova_lignin_df <- changeLong %>%
   filter(trait == "deltalignin")
+RMAnova_npe_df <- changeLong %>%
+  filter(trait == "deltanpe")
+RMAnova_hemicell_df <- changeLong %>%
+  filter(trait == "deltahemicell")
+RMAnova_cell_df <- changeLong %>%
+  filter(trait == "deltacell")
 RMAnova_ligninN_df <- changeLong %>%
   filter(trait == "deltaligninN")
 RMAnova_BSI_df <- changeLong %>%
@@ -83,6 +102,27 @@ lme_model_lignin <- lme(
   na.action = na.exclude
 )
 
+lme_model_npe <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_npe_df,
+  na.action = na.exclude
+)
+
+lme_model_hemicell <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_hemicell_df,
+  na.action = na.exclude
+)
+
+lme_model_cell <- lme(
+  value ~ treatment * year,
+  random = ~1 | block,
+  data = RMAnova_cell_df,
+  na.action = na.exclude
+)
+
 lme_model_ligninN <- lme(
   value ~ treatment * year,
   random = ~1 | block,
@@ -104,6 +144,9 @@ anova(lme_model_CN)
 anova(lme_model_CP)
 anova(lme_model_NP)
 anova(lme_model_lignin)
+anova(lme_model_npe)
+anova(lme_model_hemicell)
+anova(lme_model_cell)
 anova(lme_model_ligninN)
 anova(lme_model_BSI)
 
@@ -145,13 +188,15 @@ arrangeCN <- plot_emmeans_by_year(lme_model_CN, "C:N")
 arrangeCP <- plot_emmeans_by_year(lme_model_CP, "C:P")
 arrangeNP <- plot_emmeans_by_year(lme_model_NP, "N:P")
 arrangelignin <- plot_emmeans_by_year(lme_model_lignin, "% Lignin")
+arrangenpe <- plot_emmeans_by_year(lme_model_npe, "% NPE")
+arrangehemicell <- plot_emmeans_by_year(lme_model_hemicell, "% Hemicellulose")
+arrangecell <- plot_emmeans_by_year(lme_model_cell, "% Cellulose")
 arrangeligninN <- plot_emmeans_by_year(lme_model_ligninN, "Lignin:N")
 arrangeBSI <- plot_emmeans_by_year(lme_model_BSI, "% Silica")
 
-arrangeN
 
 cnpFigures <- ggarrange(arrangeC, arrangeN, arrangeP, arrangeCN, arrangeCP, arrangeNP)
-ligBSIFigures <- ggarrange(arrangelignin, arrangeligninN, arrangeBSI)
+ligBSIFigures <- ggarrange(arrangelignin, arrangenpe, arrangehemicell, arrangecell, arrangeligninN, arrangeBSI)
 
 ggsave("cnpFigures.pdf", cnpFigures, height = 8, width = 16)
 ggsave("ligBSIFigures.pdf", ligBSIFigures, width = 16, height = 8)
@@ -195,6 +240,9 @@ models <- list(
   CP = lme_model_CP,
   NP = lme_model_NP,
   lignin = lme_model_lignin,
+  npe = lme_model_npe,
+  hemicell = lme_model_hemicell,
+  cell = lme_model_cell,
   ligninN = lme_model_ligninN,
   BSI = lme_model_BSI
 )
@@ -225,5 +273,23 @@ save_emm_results <- function(model_list, output_dir = "emm_results") {
 }
 
 save_emm_results(models)
+
+
+##view individually
+
+results_C <- get_emm_and_contrasts(lme_model_C)
+as.data.frame(results_C$emmeans)
+summary(results_C$comparisons)
+
+results_cell <- get_emm_and_contrasts(lme_model_cell)
+as.data.frame(results_cell$emmeans)
+summary(results_cell$comparisons)
+
+results_npe <- get_emm_and_contrasts(lme_model_npe)
+as.data.frame(results_npe$emmeans)
+summary(results_npe$comparisons)
+```
+```{r}
+emmeans(lme_model_npe, ~ treatment | year)
 ```
 

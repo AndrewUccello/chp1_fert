@@ -19,13 +19,6 @@ library(scales) # scale functions for visualization
 # fix year column to make it a factor
 
 ```{r}
-# Convert to Date class if it's not already
-Chp1_fert_data$year <- as.Date(Chp1_fert_data$year)
-library(lubridate)
-
-# Extract year using lubridate's year function
-Chp1_fert_data$year <- year(Chp1_fert_data$year)
-Chp1_fert_data$year <- factor(Chp1_fert_data$year)
 
 # View the updated dataset
 head(Chp1_fert_data)
@@ -77,7 +70,7 @@ Chp1_fert_data <- Chp1_fert_data %>%
 
 ```{r}
 # List of response variables
-response_vars<- c("C", "N", "p", "BSI", "lignin", "CN", "CP", "NP", "ligninN")
+response_vars<- c("C", "N", "p", "BSI", "lignin","npe", "hemicell", "cell", "CN", "CP", "NP", "ligninN")
 
 # Loop through each response variable
 for (response in response_vars) {
@@ -142,7 +135,7 @@ write.csv(Chp1_fert_data, 'Chp1_fert_data_clean.csv')
 
 ```{r}
 # List of response variables
-response_vars_cleaned<- c("C", "N", "p", "BSI", "lignin", "CN", "CP", "NP", "ligninN")
+response_vars_cleaned<- c("C", "N", "p", "BSI", "lignin","npe", "hemicell", "cell", "CN", "CP", "NP", "ligninN")
 
 # Loop through each response variable
 for (response in response_vars_cleaned) {

@@ -27,9 +27,11 @@ for (y_col in yaxis_variables) {
     init_plot <- Chp1_fert_data_clean %>%
       filter(year == 2018) %>%
       ggplot(aes(x = treatment, y = .data[[y_col]])) + 
-      geom_boxplot(aes(fill = treatment)) +
+      geom_boxplot(aes(fill = treatment), outlier.shape = NA) +
+      geom_jitter(width = 0.1, height = 0, alpha = 0.5)+
       scale_fill_brewer(palette = "YlGn") +
-      scale_color_brewer(palette = "YlGn") 
+      scale_color_brewer(palette = "YlGn") +
+      theme_minimal()
     
     # Print the plot
     print(init_plot)
@@ -50,6 +52,9 @@ anova(lm(InitAnova_dataset$CP~InitAnova_dataset$treatment))
 anova(lm(InitAnova_dataset$NP~InitAnova_dataset$treatment))
 anova(lm(InitAnova_dataset$BSI~InitAnova_dataset$treatment))
 anova(lm(InitAnova_dataset$lignin~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$npe~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$hemicell~InitAnova_dataset$treatment))
+anova(lm(InitAnova_dataset$cell~InitAnova_dataset$treatment))
 anova(lm(InitAnova_dataset$ligninN~InitAnova_dataset$treatment))
 ```
 
